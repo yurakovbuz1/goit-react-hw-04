@@ -1,0 +1,28 @@
+.form {
+  background-color: blue;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 15px;
+}
+
+.searchField {
+  width: 360px;
+  height: 30px;
+}
+
+.searchButton {
+  cursor: pointer;
+  /* width: 180px; */
+  color: white;
+  font-weight: 700;
+  padding: 8px;
+  border: 1.5px solid black;
+  border-radius: 5px;
+  background-color: rgb(165, 139, 231);
+}
+
+.searchButton:hover {
+  background-color: black;
+}
