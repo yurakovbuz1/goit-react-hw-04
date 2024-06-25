@@ -6,7 +6,7 @@ const ImageGallery = ({images}) => {
     <ul>
             {images.map((image) => {
             <li key={image.id}>
-                <ImageCard />
+                <ImageCard small={image.urls.small} description={image.description} />
             </li>
         })} 
     </ul>    
@@ -14,3 +14,4 @@ const ImageGallery = ({images}) => {
 }
 
 export default ImageGallery
+    
