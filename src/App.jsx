@@ -8,29 +8,33 @@ import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
 
 const ACCESS_KEY = 'hffMbJ-gOd_syN1szFIgkdmE2UIDBfwUtcE-8dIYTUY';
-const baseURL = 'https://api.unsplash.com/';
+const baseURL = 'https://api.unsplash.com/search/photos/';
 
 function App() {
   const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [isFinalPage, setFinalPage] = useState(true);
 
   useEffect(() => {
-    let lastPage = false;
     const fetchData = async () => {
       try {
         setError(false);
         setLoading(true);
-        const data = await axios.get(baseURL, {
-          client_id: ACCESS_KEY,
-          query,
-          page,
-          per_page: 12,
+        const { data } = await axios.get(baseURL, {
+          params: {
+            client_id: ACCESS_KEY,
+            query,
+            page,
+            per_page: 12,
+          }
         });
-        setImages(data.results)
-        lastPage = page === data.total_pages;
+        setImages((prev) => [...prev, ...data.results]);
+        console.log('data.total_pages :>> ', data.total_pages);
+        console.log('page :>> ', page);
+        setFinalPage(data.total_pages - page <= 0);
       }
       catch (e) {
         setError(true);
@@ -39,11 +43,13 @@ function App() {
         setLoading(false);
       }
     }
-    fetchData()
+    query && fetchData()
 
   }, [page, query])
 
   const handleSubmit = (searchQuery) => {
+    setImages([]);
+    setPage(1);
     setQuery(searchQuery);
   }
 
@@ -57,7 +63,7 @@ function App() {
       <SearchBar onSubmit={handleSubmit} />
       {isError ? <ErrorMessage/> : <ImageGallery images={images} />}
       {isLoading && <Loader />}
-      {images.length > 0 && <LoadMoreBtn onClick={handlePage} />}
+      {!isFinalPage && <LoadMoreBtn onClick={handlePage} />}
     </>
   )
 }
